@@ -1,5 +1,5 @@
 # Ngrok-Multi-Tunnel Tool 
-Using our ngrok multiple tunnel tool you can make unlimited TCP & HTTP tunnels and use them for free. As the free version of ngrok supports only one tunnel at a given time, we came around this and found some bypasses in order to use multiple tunnels. we made this tool to benefit you guys...
+Using our ngrok multiple tunnel tool you can make unlimited TCP & HTTP tunnels and use them for free. As the free version of ngrok supports only one tunnel at a given time, we came around this and found some bypasses in order to use multiple tunnels. we made this tool to benefit you guys.
 
 
 ## Installation
