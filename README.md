@@ -39,7 +39,7 @@ You need to generate 2 ngrok authtokens and add it to the script (don't worry we
 
 
 
-## Changes Required in script 
+## Changes Required in the script 
 
 1) Add authtokens between quotes "" if required.
 
