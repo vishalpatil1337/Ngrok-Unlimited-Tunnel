@@ -22,9 +22,9 @@ if [ "" = "$PKG_OK" ]; then
 fi
 
 echo "\nSelect the type of tunnel you need"
-echo "\n[1]. HTTP"
-echo "[2]. TCP"
-echo "[3]. BOTH - HTTP & TCP"
+echo "\n[1]. Unlimited HTTP Tunnels"
+echo "[2]. Unlimited TCP Tunnels"
+echo "[3]. BOTH - HTTP & TCP Unlimited Tunnels"
 echo "\nEnter Your Choice :" 
 read choice
 
