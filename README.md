@@ -15,7 +15,15 @@ Before running the script, the user has to create multiple accounts in ngrok.com
 4) Do the same by creating another account and put it in the script as authtoken2  
    **on line 4 ->**   auth2="<your token>"    # Change this
 
-If you require more number of tunnels to be used at the same time, repeat the process and add any number of authtokens as per your requirement.
+
+## Advanced Usage
+
+If you require more number of tunnels to be used at the same time, repeat the above process and add any number of authtokens as per your requirement.
+
+If you are planning to use 1 tcp and 1 http tunnel at a given time then the above requirement is enough. but incase if you need to run 2 tcp tunnels at the same time then,
+You need to generate 2 ngrok authtokens and add it to the script (don't worry we are not planning on stealing it. feel free to read the script). If you understand the logic of the script, you can make more tunnels by modifying the script to meet your requirements.
+
+on line 3 and 4 of the script you can find variables like auth1 & auth2, if you need to open more tunnels, say 5 you can always add auth3, auth4, auth5 and assign your authtoken to it, the script is designed to dynamically adapt to the changes of any number of tunnels, if enough no of authtokens are provided
 
 
 ## Installation
@@ -23,6 +31,7 @@ If you require more number of tunnels to be used at the same time, repeat the pr
 ``` bash
 $ git clone https://github.com/vishalpatil1337/ngrok-unlimited-tunnel.git
 ```
+
 
 ## Requirements
 
@@ -35,15 +44,8 @@ $ sudo apt-get install gnome-terminal -y
 
 $ curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null && echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list && sudo apt update && sudo apt install ngrok
 ```
+
   
-## Requirement for more Advanced Usage
-
-If you are planning to use 1 tcp and 1 http tunnel at a given time then the above requirement is enough. but incase if you need to run 2 tcp tunnels at the same time then,
-You need to generate 2 ngrok authtokens and add it to the script (don't worry we are not planning on stealing it. feel free to read the script). If you understand the logic of the script, you can make more tunnels by modifying the script to meet your requirements.
-
-on line 3 and 4 of the script you can find variables like auth1 & auth2, if you need to open more tunnels, say 5 you can always add auth3, auth4, auth5 and assign your authtoken to it, the script is designed to dynamically adapt to the changes of any number of tunnels, if enough no of authtokens are provided
-
-
 ## Changes Required in the script 
 
 1) Add authtokens between quotes "" if required.
