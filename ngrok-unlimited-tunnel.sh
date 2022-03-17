@@ -1,59 +1,93 @@
-#!/bin/bash
+#!/bin/sh
 
 auth1="<your_token>"   # Fill this
 auth2="<your_token>"   # Fill this
 
-echo "[1] Run the following commands to install the Requirements"
 
-echo ""
+echo "\n[!] Checking requirements"
+REQUIRED_PKG="gnome-terminal"
+PKG_OK=$(dpkg-query -W --showformat='${Status}\n' $REQUIRED_PKG|grep "install ok installed")
+echo Checking for $REQUIRED_PKG: $PKG_OK
+if [ "" = "$PKG_OK" ]; then
+  echo "[!] $REQUIRED_PKG Not installed. Setting up $REQUIRED_PKG."
+  sudo apt-get --yes install $REQUIRED_PKG
+fi
 
-echo "gnome terminal must be installed if not, use this command -> sudo apt-get install gnome-terminal -y"
+REQUIRED_PKG="ngrok"
+PKG_OK=$(dpkg-query -W --showformat='${Status}\n' $REQUIRED_PKG|grep "install ok installed")
+echo Checking for $REQUIRED_PKG: $PKG_OK
+if [ "" = "$PKG_OK" ]; then
+  echo "[!] $REQUIRED_PKG Not installed. Setting up $REQUIRED_PKG."
+  curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null && echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list && sudo apt update && sudo apt install ngrok
+fi
 
-echo ""
+echo "\nSelect the type of tunnel you need"
+echo "\n[1]. HTTP"
+echo "[2]. TCP"
+echo "[3]. BOTH - HTTP & TCP"
+echo "\nEnter Your Choice :" 
+read choice
 
-echo "[2] enter this command -> curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null && echo "deb https://ngrok-agent.s3.amazonaws.com buster main" | sudo tee /etc/apt/sources.list.d/ngrok.list && sudo apt update && sudo apt install ngrok'"
+echo "\nMake sure that you have added the required number of authtokens in the script. if not exit now, add it and come back. For more info read this : https://github.com/vishalpatil1337/Ngrok-Unlimited-Tunnel"
 
-echo ""
-echo ""
+if [ $choice = 1 ]
+then
+	echo "\nEnter the port no's with space between them for opening the tunnels (eg.. 80 90 100)"	
+	read ports
+	count=0
+	for port in $ports
+	do
+		count=$((count+1))
+		authtoken=auth$count
+		eval echo "authtoken: \$${authtoken}" > ~/.ngrok2/ngrok.yml
+		echo "\nSpawning Your Tunnel $count..."
+		gnome-terminal --tab --title="Tunnel $count" -- ngrok http $port
+		sleep 2
+	done
 
-echo "enter any port for HTTP tunnel"
-read http
-echo ""
-echo "Enter any port for TCP tunnel"
-read tcp
+elif [ $choice = 2 ]
+then
+	echo "\nEnter the port no's with space between them for opening the tunnels (eg.. 80 90 100)"	
+	read ports
+	count=0
+	for port in $ports
+	do
+		count=$((count+1))
+		authtoken=auth$count
+		eval echo "authtoken: \$${authtoken}" > ~/.ngrok2/ngrok.yml
+		echo "\nSpawning Your Tunnel $count..."
+		gnome-terminal --tab --title="Tunnel $count" -- ngrok tcp $port
+		sleep 2
+	done
 
-echo "authtoken: $auth1
-tunnels:
+elif [ $choice = 3 ]
+then
+	echo "\nEnter the No of Tunnels Required (No of Sets)"
+	read num
+	
+	echo "\nYou will need to enter $num HTTP ports & $num TCP ports. \n[!]Caution : Don't repeat port numbers\n"
+	
+	for i in $(seq 1 $num)
+	do
+		echo "\nConfiguring Set $i\n"
+		echo "\nEnter HTTP port number"
+		read http
+		echo "\nEnter TCP port number"
+		read tcp
+		authtoken=auth$i
+		eval echo "authtoken: \$${authtoken}" > ~/.ngrok2/ngrok.yml
+		echo "tunnels:
   web:
       addr: $http
       proto: http
   file:
       addr: $tcp
-      proto: tcp"  > /home/vishal/.ngrok2/ngrok.yml                        # change this path.. kali to your username
+      proto: tcp"  >> ~/.ngrok2/ngrok.yml                
+		echo "\nSpawning Your Tunnel Set $i..."
+		gnome-terminal --tab --title="Tunnel $i" -- ngrok start --all
+		sleep 2
+	done
+	
+fi
 
-	gnome-terminal --tab --title="Tunnel 1" --command="ngrok start --all"
-
-break
-sleep 5
-
-echo "Lets make 2 nd tunnel"
-echo ""
-echo "Enter any port for HTTP tunnel (exept you alredy used for 1 st tunnel)"
-read http1
-echo ""
-echo "Enter any port for TCP tunnel (exept you alredy used for 1 st tunnel)"
-read tcp1
-
-echo "authtoken: $auth2
-tunnels:
-  web:
-      addr: $http1
-      proto: http
-  file:
-      addr: $tcp1
-      proto: tcp"  > /home/kali/.ngrok2/ngrok.yml                # change this path .. kali to your username
-
-
-gnome-terminal --tab --title="Tunnel 2" --command="ngrok start --all"
-echo ""
-echo "enjoy"
+echo "\nEnjoy Free Tunnels"
